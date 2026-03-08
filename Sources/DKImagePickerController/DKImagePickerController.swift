@@ -57,7 +57,7 @@ internal protocol DKImagePickerControllerObserver {
 open class DKUINavigationController: UINavigationController {}
 
 @objc
-open class DKImagePickerController: DKUINavigationController, DKImageBaseManagerObserver, UIAdaptivePresentationControllerDelegate {
+open class DKImagePickerController: DKUINavigationController, @preconcurrency DKImageBaseManagerObserver, UIAdaptivePresentationControllerDelegate {
     
     /// Use UIDelegate to Customize the picker UI.
     @objc public var UIDelegate: DKImagePickerControllerBaseUIDelegate! {
@@ -310,7 +310,7 @@ open class DKImagePickerController: DKUINavigationController, DKImageBaseManager
     @objc open func done() {
         self.cancelCurrentExportRequestIfNeeded()
         
-        let completeBlock: ([DKAsset]) -> Void = { assets in
+        let completeBlock: @Sendable ([DKAsset]) -> Void = { assets in
             self.exportStatus = .none
             
             self.didSelectAssets?(assets)
