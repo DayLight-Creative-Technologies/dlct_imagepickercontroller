@@ -8,6 +8,7 @@
 
 import Foundation
 
+@MainActor
 protocol DKImageBaseManagerObserver {
     
     func add(observer object: AnyObject)

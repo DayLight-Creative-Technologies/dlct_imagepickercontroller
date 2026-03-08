@@ -151,7 +151,7 @@ open class DKImageAssetExporter: DKImageBaseManager, @unchecked Sendable {
     
     /// This method starts an asynchronous export operation of a batch of asset.
     @discardableResult
-    @objc public func exportAssetsAsynchronously(assets: [DKAsset], completion: ((_ info: [AnyHashable : Any]) -> Void)?) -> DKImageAssetExportRequestID {
+    @objc public func exportAssetsAsynchronously(assets: [DKAsset], completion: (@Sendable (_ info: [AnyHashable : Any]) -> Void)?) -> DKImageAssetExportRequestID {
         guard assets.count > 0 else {
             completion?([
                 DKImageAssetExportResultRequestIDKey : DKImageAssetExportInvalidRequestID,
@@ -484,8 +484,8 @@ open class DKImageAssetExporter: DKImageBaseManager, @unchecked Sendable {
     }
     
     private func exportAVAsset(with asset: DKAsset, requestID: DKImageAssetExportRequestID, progress: @escaping (Double) -> Void, completion: @escaping (Error?) -> Void) {
-        var isNotInLocal = false
-        
+        nonisolated(unsafe) var isNotInLocal = false
+
         let options = PHVideoRequestOptions()
         options.deliveryMode = .mediumQualityFormat
         options.progressHandler = { (p, _, _, _) in
@@ -528,8 +528,8 @@ open class DKImageAssetExporter: DKImageBaseManager, @unchecked Sendable {
                     
                     if avAsset.isExportable, let exportSession = AVAssetExportSession(asset: avAsset, presetName: self.configuration.videoExportPreset) {
                         let (auxiliaryDirectory, auxiliaryFilePath) = self.generateAuxiliaryPath(with: asset.localTemporaryPath!)
-                        
-                        let fileManager = FileManager.default
+
+                        nonisolated(unsafe) let fileManager = FileManager.default
                         if fileManager.fileExists(atPath: auxiliaryFilePath.path) {
                             try? fileManager.removeItem(at: auxiliaryFilePath)
                         }
