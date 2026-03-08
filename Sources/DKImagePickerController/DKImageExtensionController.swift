@@ -33,7 +33,7 @@ public protocol DKImageExtensionProtocol {
 
 /// This is the base class for all extensions.
 @objc
-open class DKImageBaseExtension: NSObject, DKImageExtensionProtocol {
+open class DKImageBaseExtension: NSObject, @unchecked Sendable, DKImageExtensionProtocol {
     
     public let context: DKImageExtensionContext
     

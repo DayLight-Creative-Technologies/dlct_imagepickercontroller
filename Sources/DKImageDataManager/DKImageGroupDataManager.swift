@@ -94,7 +94,7 @@ open class DKImageGroupDataManager: DKImageBaseManager, @unchecked Sendable, PHP
         PHPhotoLibrary.shared().unregisterChangeObserver(self)
     }
 
-    open func fetchGroups(_ completeBlock: @escaping (_ groups: [String]?, _ error: NSError?) -> Void) {
+    open func fetchGroups(_ completeBlock: @escaping @Sendable (_ groups: [String]?, _ error: NSError?) -> Void) {
         guard self.groups == nil else {
             completeBlock(self.groupIds, nil)
             return
@@ -222,7 +222,7 @@ open class DKImageGroupDataManager: DKImageBaseManager, @unchecked Sendable, PHP
     
     open func updatePartial(groups: [String : DKAssetGroup],
                             groupIds: [String],
-                            completeBlock: @escaping (_ groups: [String]?, _ error: NSError?) -> Void) {
+                            completeBlock: @escaping @Sendable (_ groups: [String]?, _ error: NSError?) -> Void) {
         self.groups = groups
         self.groupIds = groupIds
         DispatchQueue.main.async {

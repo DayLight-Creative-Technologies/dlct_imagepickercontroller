@@ -18,7 +18,7 @@ public func getImageDataManager() -> DKImageDataManager {
 
 public class DKImageDataManager: @unchecked Sendable {
 
-	public class func checkPhotoPermission(_ handler: @escaping (_ granted: Bool) -> Void) {
+	public class func checkPhotoPermission(_ handler: @escaping @Sendable (_ granted: Bool) -> Void) {
 		func hasPhotoPermission() -> Bool {
 			return PHPhotoLibrary.authorizationStatus() == .authorized
 		}
