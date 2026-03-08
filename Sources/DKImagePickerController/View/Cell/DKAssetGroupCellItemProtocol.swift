@@ -8,6 +8,7 @@
 
 import UIKit
 
+@MainActor
 @objc
 public protocol DKAssetGroupCellItemProtocol {
     

@@ -31,6 +31,7 @@ public enum DKImagePickerControllerExportStatus: Int {
 
 ////////////////////////////////////////////////////////////////////////
 
+@MainActor
 @objc
 public protocol DKImagePickerControllerAware {
     weak var imagePickerController: DKImagePickerController! { get set }
@@ -40,6 +41,7 @@ public protocol DKImagePickerControllerAware {
 
 ////////////////////////////////////////////////////////////////////////
 
+@MainActor
 @objc
 internal protocol DKImagePickerControllerObserver {
     

@@ -11,7 +11,7 @@ import Photos
 
 let DKImageGroupCellIdentifier = "DKImageGroupCellIdentifier"
 
-@objc public protocol DKAssetGroupCellType {
+@MainActor @objc public protocol DKAssetGroupCellType {
     static var preferredHeight: CGFloat { get }
     func configure(with assetGroup: DKAssetGroup, tag: Int, dataManager: DKImageGroupDataManager, imageRequestOptions: PHImageRequestOptions)
 }

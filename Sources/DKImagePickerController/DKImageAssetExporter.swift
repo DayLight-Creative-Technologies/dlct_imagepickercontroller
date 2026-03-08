@@ -10,8 +10,7 @@ import UIKit
 import Photos
 
 /// Purge disk on system UIApplicationWillTerminate notifications.
-@MainActor
-public class DKImageAssetDiskPurger {
+public class DKImageAssetDiskPurger: @unchecked Sendable {
 
     static let sharedInstance = DKImageAssetDiskPurger()
 
@@ -123,7 +122,7 @@ public class DKImageAssetExporterConfiguration: NSObject, NSCopying {
  It automatically deletes the exported directories when it receives a UIApplicationWillTerminate notification.
  */
 @objc
-open class DKImageAssetExporter: DKImageBaseManager {
+open class DKImageAssetExporter: DKImageBaseManager, @unchecked Sendable {
     
     @objc static public let sharedInstance = DKImageAssetExporter(configuration: DKImageAssetExporterConfiguration())
 
@@ -377,19 +376,18 @@ open class DKImageAssetExporter: DKImageBaseManager {
         }
     }
     
+    private func writeData(_ data: Data, to url: URL) throws {
+        let (auxiliaryDirectory, auxiliaryFilePath) = self.generateAuxiliaryPath(with: url)
+
+        let fileManager = FileManager.default
+        try fileManager.createDirectory(at: auxiliaryDirectory, withIntermediateDirectories: true, attributes: nil)
+
+        try data.write(to: auxiliaryFilePath, options: [.atomic])
+        try fileManager.moveItem(at: auxiliaryFilePath, to: url)
+        try fileManager.removeItem(at: auxiliaryDirectory)
+    }
+
     private func exportImage(with asset: DKAsset, requestID: DKImageAssetExportRequestID, progress: @escaping (Double) -> Void, completion: @escaping (Error?) -> Void) {
-        
-        func write(data: Data, to url: URL) throws {
-            let (auxiliaryDirectory, auxiliaryFilePath) = self.generateAuxiliaryPath(with: url)
-            
-            let fileManager = FileManager.default
-            try fileManager.createDirectory(at: auxiliaryDirectory, withIntermediateDirectories: true, attributes: nil)
-            
-            try data.write(to: auxiliaryFilePath, options: [.atomic])
-            try fileManager.moveItem(at: auxiliaryFilePath, to: url)
-            try fileManager.removeItem(at: auxiliaryDirectory)
-        }
-        
         if let originalAsset = asset.originalAsset {
             autoreleasepool {
                 let options = PHImageRequestOptions()
@@ -448,7 +446,7 @@ open class DKImageAssetExporter: DKImageBaseManager {
                             }
                             
                             do {
-                                try write(data: imageData, to: asset.localTemporaryPath!)
+                                try self.writeData(imageData, to: asset.localTemporaryPath!)
                                 completion(nil)
                             } catch {
                                 completion(error)
@@ -476,7 +474,7 @@ open class DKImageAssetExporter: DKImageBaseManager {
                 }
                 
                 do {
-                    try write(data: asset.image!.jpegData(compressionQuality: quality)!, to: asset.localTemporaryPath!)
+                    try self.writeData(asset.image!.jpegData(compressionQuality: quality)!, to: asset.localTemporaryPath!)
                     completion(nil)
                 } catch {
                     completion(error)

@@ -81,10 +81,16 @@ open class DKImageExtensionGallery: DKImageBaseExtension, DKPhotoGalleryDelegate
     
     // MARK: - DKPhotoGalleryDelegate
     
-    open lazy var backItem = UIBarButtonItem(image: DKImagePickerControllerResource.photoGalleryBackArrowImage(),
-                                           style: .plain,
-                                           target: self,
-                                           action: #selector(dismissGallery))
+    private var _backItem: UIBarButtonItem?
+    open var backItem: UIBarButtonItem {
+        if _backItem == nil {
+            _backItem = UIBarButtonItem(image: DKImagePickerControllerResource.photoGalleryBackArrowImage(),
+                                        style: .plain,
+                                        target: self,
+                                        action: #selector(dismissGallery))
+        }
+        return _backItem!
+    }
     
     open func photoGallery(_ gallery: DKPhotoGallery, didShow index: Int) {
         if let viewController = gallery.topViewController {

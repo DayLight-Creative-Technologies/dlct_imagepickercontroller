@@ -111,6 +111,8 @@ public extension DKAsset {
     }
 
     @objc func cancelRequests() {
+        objc_sync_enter(self)
+        defer { objc_sync_exit(self) }
         if let requestIDs = self.requestIDs {
             getImageDataManager().cancelRequests(requestIDs: requestIDs as! [DKImageRequestID])
 
@@ -133,12 +135,14 @@ public extension DKAsset {
     }
     
     private func add(requestID: DKImageRequestID) {
+        objc_sync_enter(self)
+        defer { objc_sync_exit(self) }
         var requestIDs: NSMutableArray! = self.requestIDs
         if requestIDs == nil {
             requestIDs = NSMutableArray()
             self.requestIDs = requestIDs
         }
-        
+
         requestIDs.add(requestID)
     }
     

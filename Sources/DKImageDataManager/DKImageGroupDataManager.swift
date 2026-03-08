@@ -9,6 +9,7 @@
 import UIKit
 import Photos
 
+@MainActor
 @objc
 protocol DKImageGroupDataManagerObserver {
 
@@ -67,7 +68,7 @@ public class DKImageGroupDataManagerConfiguration: NSObject, NSCopying {
  Create and manage a collection of DKAssetGroup.
  */
 @objc
-open class DKImageGroupDataManager: DKImageBaseManager, @retroactive PHPhotoLibraryChangeObserver {
+open class DKImageGroupDataManager: DKImageBaseManager, @unchecked Sendable, PHPhotoLibraryChangeObserver {
 
     public var groupIds: [String]?
     private var groups: [String : DKAssetGroup]?
@@ -241,13 +242,7 @@ open class DKImageGroupDataManager: DKImageBaseManager, @retroactive PHPhotoLibr
 
     // MARK: - PHPhotoLibraryChangeObserver methods
 
-    nonisolated open func photoLibraryDidChange(_ changeInstance: PHChange) {
-        DispatchQueue.main.async { [weak self] in
-            self?.handlePhotoLibraryChange(changeInstance)
-        }
-    }
-
-    private func handlePhotoLibraryChange(_ changeInstance: PHChange) {
+    open func photoLibraryDidChange(_ changeInstance: PHChange) {
         guard let groups = self.groups?.values else { return  }
 
         for group in groups {

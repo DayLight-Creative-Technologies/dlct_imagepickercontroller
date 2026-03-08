@@ -10,7 +10,7 @@ import UIKit
 
 public class DKImagePickerControllerResource: NSObject {
     
-    private static let cache = NSCache<NSString, UIImage>()
+    nonisolated(unsafe) private static let cache = NSCache<NSString, UIImage>()
     
     // MARK: - Internationalization
     
