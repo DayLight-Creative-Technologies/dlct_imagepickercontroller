@@ -1,5 +1,28 @@
 # Change Log
 
+## [5.0.0](https://github.com/DayLight-Creative-Technologies/dlct_imagepickercontroller/tree/5.0.0) (2026-03-08)
+
+### DLCT Fork — DayLight Creative Technologies (Steven Day)
+
+**Swift 6 strict concurrency migration:**
+- Added `@MainActor` isolation to 8 core classes: `DKImageBaseManager`, `DKImageDataManager`, `DKImageGroupDataManager`, `DKAsset`, `DKAssetGroup`, `DKImageAssetDiskPurger`, `DKImageAssetExporter`, `DKImagePickerControllerResource`
+- Added `nonisolated(unsafe)` to 7 static vars used as associated object keys and mutable global state (`ExportKeys`, `FetchKeys`, `DKImageAssetExporter.seed`, `DKImageExtensionController.defaultExtensions/extensions`, `DKImagePickerControllerResource.customLocalizationBlock/customImageBlock`)
+- Added `@retroactive PHPhotoLibraryChangeObserver` conformance for Swift 6 compliance
+- Replaced all `objc_sync_enter/exit` manual locking with `@MainActor` isolation (5 sites)
+- Refactored `photoLibraryDidChange` to `nonisolated` with main actor dispatch (Photos framework calls on background thread)
+- Added `@Sendable` annotation to `checkPhotoPermission` handler closure
+- Wrapped camera `setup()` UIKit access in `DispatchQueue.main.async` (2 extension files)
+
+**Deprecated API modernization:**
+- Replaced all `UIApplication.shared.keyWindow!` usage with `UIWindowScene`-based window access (3 sites in `DKImagePickerController`, `DKPopoverViewController`)
+
+**Platform requirements:**
+- Minimum iOS 15.0 (was iOS 9.0)
+- Swift 5.10+ / Swift 6.0 (was Swift 4.2 / 5)
+- Swift tools version 5.10 (was 5.3)
+
+Upstream: https://github.com/zhangao0086/DKImagePickerController
+
 ## [4.3.2](https://github.com/zhangao0086/DKImagePickerController/tree/4.3.2) (2020-06-03)
 
 - Adds compression quality parameter to export configuration.

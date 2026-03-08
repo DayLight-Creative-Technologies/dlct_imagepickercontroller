@@ -67,7 +67,7 @@ public class DKImageGroupDataManagerConfiguration: NSObject, NSCopying {
  Create and manage a collection of DKAssetGroup.
  */
 @objc
-open class DKImageGroupDataManager: DKImageBaseManager, PHPhotoLibraryChangeObserver {
+open class DKImageGroupDataManager: DKImageBaseManager, @retroactive PHPhotoLibraryChangeObserver {
 
     public var groupIds: [String]?
     private var groups: [String : DKAssetGroup]?
@@ -94,36 +94,35 @@ open class DKImageGroupDataManager: DKImageBaseManager, PHPhotoLibraryChangeObse
     }
 
     open func fetchGroups(_ completeBlock: @escaping (_ groups: [String]?, _ error: NSError?) -> Void) {
+        guard self.groups == nil else {
+            completeBlock(self.groupIds, nil)
+            return
+        }
+
         let assetGroupTypes = self.configuration.assetGroupTypes
-        
+        let groupFetchPredicate = self.configuration.groupFetchPredicate
+
+        // Photos framework fetches are synchronous — dispatch to background to avoid blocking main
         DispatchQueue.global(qos: .userInteractive).async { [weak self] in
             guard let strongSelf = self else { return }
-            
-            guard strongSelf.groups == nil else {
-                DispatchQueue.main.async {
-                    completeBlock(strongSelf.groupIds, nil)
-                }
-                return
-            }
-            
-            var groups: [String : DKAssetGroup] = [:]
-            var groupIds: [String] = []
-            
+
+            var localGroups: [String : DKAssetGroup] = [:]
+            var localGroupIds: [String] = []
+
             strongSelf.fetchGroups(assetGroupTypes: assetGroupTypes,
-                                   groupFetchPredicate: self?.configuration.groupFetchPredicate,
+                                   groupFetchPredicate: groupFetchPredicate,
                                    block: { (collection) in
                                     let assetGroup = strongSelf.makeDKAssetGroup(with: collection)
-                                    groups[assetGroup.groupId] = assetGroup
-                                    groupIds.append(assetGroup.groupId)
-                                    
-                                    // Filter the reloads to avoid frequetly reloadData() calling in collectionView
-                                    if !groupIds.isEmpty && collection.assetCollectionSubtype == .smartAlbumUserLibrary {
-                                        strongSelf.updatePartial(groups: groups, groupIds: groupIds, completeBlock: completeBlock)
+                                    localGroups[assetGroup.groupId] = assetGroup
+                                    localGroupIds.append(assetGroup.groupId)
+
+                                    if !localGroupIds.isEmpty && collection.assetCollectionSubtype == .smartAlbumUserLibrary {
+                                        strongSelf.updatePartial(groups: localGroups, groupIds: localGroupIds, completeBlock: completeBlock)
                                     }
             })
             PHPhotoLibrary.shared().register(strongSelf)
-            if !groupIds.isEmpty {
-                strongSelf.updatePartial(groups: groups, groupIds: groupIds, completeBlock: completeBlock)
+            if !localGroupIds.isEmpty {
+                strongSelf.updatePartial(groups: localGroups, groupIds: localGroupIds, completeBlock: completeBlock)
             }
         }
     }
@@ -242,9 +241,15 @@ open class DKImageGroupDataManager: DKImageBaseManager, PHPhotoLibraryChangeObse
 
     // MARK: - PHPhotoLibraryChangeObserver methods
 
-    open func photoLibraryDidChange(_ changeInstance: PHChange) {
+    nonisolated open func photoLibraryDidChange(_ changeInstance: PHChange) {
+        DispatchQueue.main.async { [weak self] in
+            self?.handlePhotoLibraryChange(changeInstance)
+        }
+    }
+
+    private func handlePhotoLibraryChange(_ changeInstance: PHChange) {
         guard let groups = self.groups?.values else { return  }
-        
+
         for group in groups {
             if let originalCollection = group.originalCollection,
                 let changeDetails = changeInstance.changeDetails(for: originalCollection)

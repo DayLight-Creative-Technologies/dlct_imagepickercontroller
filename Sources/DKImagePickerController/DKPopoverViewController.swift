@@ -27,22 +27,26 @@ open class DKPopoverViewController: UIViewController {
     @objc open class func popoverViewController(_ viewController: UIViewController,
                                                 fromView: UIView,
                                                 arrowColor: UIColor = ArrowDefaultColor()) {
-        let window = UIApplication.shared.keyWindow!
-        
+        guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+              let window = windowScene.windows.first(where: { $0.isKeyWindow }),
+              let rootVC = window.rootViewController else { return }
+
         let popoverViewController = DKPopoverViewController()
-        
+
         popoverViewController.arrowColor = arrowColor
         popoverViewController.contentViewController = viewController
         popoverViewController.fromView = fromView
-        
+
         popoverViewController.showInView(window)
-        window.rootViewController!.addChild(popoverViewController)
+        rootVC.addChild(popoverViewController)
     }
-    
+
     @objc open class func dismissPopoverViewController() {
-        let window = UIApplication.shared.keyWindow!
-        
-        for vc in window.rootViewController!.children {
+        guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+              let window = windowScene.windows.first(where: { $0.isKeyWindow }),
+              let rootVC = window.rootViewController else { return }
+
+        for vc in rootVC.children {
             if vc is DKPopoverViewController {
                 (vc as! DKPopoverViewController).dismiss()
             }

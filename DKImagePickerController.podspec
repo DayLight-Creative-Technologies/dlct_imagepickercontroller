@@ -1,16 +1,16 @@
 Pod::Spec.new do |s|
   s.name          = "DKImagePickerController"
-  s.version       = "4.3.9"
-  s.summary       = "DKImagePickerController is a highly customizable, pure-Swift library."
-  s.homepage      = "https://github.com/zhangao0086/DKImagePickerController"
+  s.version       = "5.0.0"
+  s.summary       = "DKImagePickerController is a highly customizable, pure-Swift library. DLCT fork with Swift 6 concurrency support."
+  s.homepage      = "https://github.com/DayLight-Creative-Technologies/dlct_imagepickercontroller"
   s.license       = { :type => "MIT", :file => "LICENSE" }
-  s.author        = { "Bannings" => "zhangao0086@gmail.com" }
-  s.platform      = :ios, "9.0"
-  s.source        = { :git => "https://github.com/zhangao0086/DKImagePickerController.git",
+  s.author        = { "Steven Day" => "steven@daylightcreative.tech", "Bannings" => "zhangao0086@gmail.com" }
+  s.platform      = :ios, "15.0"
+  s.source        = { :git => "https://github.com/DayLight-Creative-Technologies/dlct_imagepickercontroller.git",
                      :tag => s.version.to_s }
-  
+
   s.requires_arc  = true
-  s.swift_version = ['4.2', '5']
+  s.swift_version = ['5.10', '6.0']
 
   s.subspec 'Core' do |core|
     core.dependency 'DKImagePickerController/ImageDataManager'

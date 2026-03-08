@@ -1,11 +1,18 @@
-DKImagePickerController
-=======================
+DKImagePickerController (DLCT Fork)
+=====================================
 
- [![Build Status](https://secure.travis-ci.org/zhangao0086/DKImagePickerController.svg)](http://travis-ci.org/zhangao0086/DKImagePickerController) [![Version Status](http://img.shields.io/cocoapods/v/DKImagePickerController.png)][docsLink] [![license MIT](https://img.shields.io/cocoapods/l/DKImagePickerController.svg?style=flat)][mitLink] [![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
+> **Maintained by [DayLight Creative Technologies](https://github.com/DayLight-Creative-Technologies) (Steven Day)**
+>
+> This fork adds Swift 6 strict concurrency support, replaces deprecated iOS APIs, and raises the minimum platform to iOS 15.
+>
+> Upstream: [zhangao0086/DKImagePickerController](https://github.com/zhangao0086/DKImagePickerController)
 
-<img width="50%" height="50%" src="https://raw.githubusercontent.com/zhangao0086/DKImagePickerController/develop/Screenshot3.png" /><img width="50%" height="50%" src="https://raw.githubusercontent.com/zhangao0086/DKImagePickerController/develop/Screenshot4.png" />
----
-<img width="50%" height="50%" src="https://raw.githubusercontent.com/zhangao0086/DKImagePickerController/develop/Screenshot11.png" /><img width="50%" height="50%" src="https://raw.githubusercontent.com/zhangao0086/DKImagePickerController/develop/Screenshot6.png" />
+### DLCT Changes (v5.0.0)
+- **Swift 6 concurrency**: `@MainActor` isolation on all core classes, `nonisolated(unsafe)` for associated object keys, `@retroactive` protocol conformances, `@Sendable` closures
+- **Replaced `objc_sync_enter/exit`** with proper actor isolation (5 sites)
+- **Replaced deprecated `keyWindow`** with `UIWindowScene`-based access (3 sites)
+- **Minimum iOS 15.0**, Swift 5.10+ / 6.0
+
 ---
 
 ## Description
@@ -16,16 +23,16 @@ DKImagePickerController
 * Supports filtering albums and sorting by type.
 * Supports landscape, iPad, and orientation switching.
 * iCloud Support.
-* Supports batch exports `PHAsset` to lcoal files.
+* Supports batch exports `PHAsset` to local files.
 * Inline mode Support.
 * Customizable `UICollectionViewLayout`.
 * Customizable `camera`, `photo gallery` and `photo editor`.
 * Dark Mode Support
 
 ## Requirements
-* iOS 9.0+ (Drop support for iOS 8 in 4.3.0 or above)
+* iOS 15.0+
 * ARC
-* Swift 4 & 5
+* Swift 5.10+ / Swift 6.0
 
 ## Installation
 ### CocoaPods

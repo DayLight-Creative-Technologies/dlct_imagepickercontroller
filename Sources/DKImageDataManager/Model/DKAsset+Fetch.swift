@@ -111,12 +111,9 @@ public extension DKAsset {
     }
 
     @objc func cancelRequests() {
-        objc_sync_enter(self)
-        defer { objc_sync_exit(self) }
-        
         if let requestIDs = self.requestIDs {
             getImageDataManager().cancelRequests(requestIDs: requestIDs as! [DKImageRequestID])
-            
+
             self.requestIDs?.removeAllObjects()
         }
     }
@@ -136,9 +133,6 @@ public extension DKAsset {
     }
     
     private func add(requestID: DKImageRequestID) {
-        objc_sync_enter(self)
-        defer { objc_sync_exit(self) }
-        
         var requestIDs: NSMutableArray! = self.requestIDs
         if requestIDs == nil {
             requestIDs = NSMutableArray()
@@ -151,8 +145,8 @@ public extension DKAsset {
     // MARK: - Attributes
     
     private struct FetchKeys {
-        static fileprivate var requestIDs: UInt8 = 0
-        static fileprivate var fullScreenImage: UInt8 = 0
+        nonisolated(unsafe) static fileprivate var requestIDs: UInt8 = 0
+        nonisolated(unsafe) static fileprivate var fullScreenImage: UInt8 = 0
     }
     
     private var requestIDs: NSMutableArray? {

@@ -52,11 +52,11 @@ extension DKAsset {
     // MARK: - Private
     
     private struct ExportKeys {
-        static fileprivate var localTemporaryPath: UInt8 = 0
-        static fileprivate var fileName: UInt8 = 0
-        static fileprivate var fileSize: UInt8 = 0
-        static fileprivate var progress: UInt8 = 0
-        static fileprivate var error: UInt8 = 0
+        nonisolated(unsafe) static fileprivate var localTemporaryPath: UInt8 = 0
+        nonisolated(unsafe) static fileprivate var fileName: UInt8 = 0
+        nonisolated(unsafe) static fileprivate var fileSize: UInt8 = 0
+        nonisolated(unsafe) static fileprivate var progress: UInt8 = 0
+        nonisolated(unsafe) static fileprivate var error: UInt8 = 0
     }
     
     internal func setAssociatedObject(key: UnsafePointer<UInt8>, value: Any?, policy: objc_AssociationPolicy = .OBJC_ASSOCIATION_RETAIN) {

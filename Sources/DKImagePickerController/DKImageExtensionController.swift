@@ -67,8 +67,8 @@ open class DKImageExtensionNone: DKImageBaseExtension {}
 @objcMembers
 open class DKImageExtensionController: NSObject {
     
-    fileprivate static var defaultExtensions = [DKImageExtensionType : DKImageBaseExtension.Type]()
-    fileprivate static var extensions = [DKImageExtensionType : DKImageBaseExtension.Type]()
+    nonisolated(unsafe) fileprivate static var defaultExtensions = [DKImageExtensionType : DKImageBaseExtension.Type]()
+    nonisolated(unsafe) fileprivate static var extensions = [DKImageExtensionType : DKImageBaseExtension.Type]()
     
     private var blacklist = Set<DKImageExtensionType>()
     private var cache = [DKImageExtensionType : DKImageBaseExtension]()

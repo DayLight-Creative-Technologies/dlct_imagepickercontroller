@@ -1,4 +1,4 @@
-// swift-tools-version:5.3
+// swift-tools-version:5.10
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import PackageDescription
@@ -7,7 +7,7 @@ let package = Package(
     name: "DKImagePickerController",
     defaultLocalization: "en",
     platforms: [
-        .iOS(.v9),
+        .iOS(.v15),
     ],
     products: [
         .library(

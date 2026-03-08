@@ -22,6 +22,7 @@ protocol DKImageBaseManagerObserver {
 
 //////////////////////////////////////////////////////////////////////
 
+@MainActor
 open class DKImageBaseManager: NSObject, DKImageBaseManagerObserver {
     
     private let observers = NSHashTable<AnyObject>.weakObjects()

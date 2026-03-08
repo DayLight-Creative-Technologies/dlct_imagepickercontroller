@@ -262,7 +262,10 @@ open class DKImagePickerController: DKUINavigationController, DKImageBaseManager
                                      completion: (() -> Swift.Void)? = nil) {
         var targetVC: UIViewController = self
         if self.inline {
-            targetVC = UIApplication.shared.keyWindow!.rootViewController!
+            if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+               let rootVC = windowScene.windows.first(where: { $0.isKeyWindow })?.rootViewController {
+                targetVC = rootVC
+            }
         }
         
         while let presentedViewController = targetVC.presentedViewController {

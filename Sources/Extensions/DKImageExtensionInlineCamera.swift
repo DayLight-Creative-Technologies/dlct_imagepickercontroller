@@ -49,9 +49,11 @@ open class DKImageExtensionInlineCamera: DKImageBaseExtension {
         }
         
         func setup() {
-            camera.cameraOverlayView = nil
+            DispatchQueue.main.async {
+                camera.cameraOverlayView = nil
+            }
         }
-        
+
         DKCamera.checkCameraPermission { granted in
             granted ? setup() : cameraDenied()
         }

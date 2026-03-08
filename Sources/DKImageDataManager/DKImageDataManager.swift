@@ -12,13 +12,15 @@ import Photos
 public typealias DKImageRequestID = Int32
 public let DKImageInvalidRequestID: DKImageRequestID = 0
 
+@MainActor
 public func getImageDataManager() -> DKImageDataManager {
 	return DKImageDataManager.sharedInstance
 }
 
+@MainActor
 public class DKImageDataManager {
 	
-	public class func checkPhotoPermission(_ handler: @escaping (_ granted: Bool) -> Void) {
+	public class func checkPhotoPermission(_ handler: @escaping @Sendable (_ granted: Bool) -> Void) {
 		func hasPhotoPermission() -> Bool {
 			return PHPhotoLibrary.authorizationStatus() == .authorized
 		}
@@ -291,9 +293,6 @@ public class DKImageDataManager {
     
     private var seed: DKImageRequestID = 0
     private func getSeed() -> DKImageRequestID {
-        objc_sync_enter(self)
-        defer { objc_sync_exit(self) }
-        
         seed += 1
         return seed
     }

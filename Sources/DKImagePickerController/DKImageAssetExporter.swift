@@ -10,37 +10,32 @@ import UIKit
 import Photos
 
 /// Purge disk on system UIApplicationWillTerminate notifications.
+@MainActor
 public class DKImageAssetDiskPurger {
-    
+
     static let sharedInstance = DKImageAssetDiskPurger()
-    
+
     private var directories = Set<URL>()
-    
+
     private init() {
         NotificationCenter.default.addObserver(self, selector: #selector(removeFiles), name: UIApplication.willTerminateNotification, object: nil)
     }
-    
+
     deinit {
         NotificationCenter.default.removeObserver(self)
     }
-    
+
     public func add(directory: URL) {
-        objc_sync_enter(self)
-        defer { objc_sync_exit(self) }
-        
         self.directories.insert(directory)
     }
-    
+
     public func clear() {
         self.removeFiles()
     }
-    
+
     // MARK: - Private
-    
+
     @objc private func removeFiles() {
-        objc_sync_enter(self)
-        defer { objc_sync_exit(self) }
-        
         let manager = FileManager.default
         for directory in self.directories {
             try? manager.removeItem(at: directory)
@@ -294,11 +289,8 @@ open class DKImageAssetExporter: DKImageBaseManager {
     
     // MARK: - RequestID
     
-    static private var seed: DKImageAssetExportRequestID = 0
+    nonisolated(unsafe) static private var seed: DKImageAssetExportRequestID = 0
     private func getSeed() -> DKImageAssetExportRequestID {
-        objc_sync_enter(self)
-        defer { objc_sync_exit(self) }
-        
         DKImageAssetExporter.seed += 1
         return DKImageAssetExporter.seed
     }

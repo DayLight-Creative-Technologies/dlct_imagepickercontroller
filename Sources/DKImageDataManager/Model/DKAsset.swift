@@ -32,6 +32,7 @@ public enum DKAssetType: Int {
  An `DKAsset` object represents a photo or a video managed by the `DKImagePickerController`.
  */
 @objc
+@MainActor
 open class DKAsset: NSObject {
 	
 	@objc public private(set) var type: DKAssetType = .photo
