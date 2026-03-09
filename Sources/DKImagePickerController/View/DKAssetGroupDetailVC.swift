@@ -179,19 +179,22 @@ open class DKAssetGroupDetailVC: UIViewController,
     }
 
     func checkPhotoPermission() {
-		func photoDenied() {
-            guard let imagePickerController = imagePickerController else {
-                assertionFailure("Expect imagePickerController")
-                return
-            }
-            let permissionColors = imagePickerController.permissionViewColors
-            self.view.addSubview(DKPermissionView.permissionView(.photo, withColors: permissionColors))
-            self.view.backgroundColor = permissionColors.backgroundColor
-			self.collectionView?.isHidden = true
-		}
-
-		DKImageDataManager.checkPhotoPermission { granted in
-			granted ? self.reload() : photoDenied()
+		DKImageDataManager.checkPhotoPermission { [weak self] granted in
+			DispatchQueue.main.async {
+				guard let self = self else { return }
+				if granted {
+					self.reload()
+				} else {
+					guard let imagePickerController = self.imagePickerController else {
+						assertionFailure("Expect imagePickerController")
+						return
+					}
+					let permissionColors = imagePickerController.permissionViewColors
+					self.view.addSubview(DKPermissionView.permissionView(.photo, withColors: permissionColors))
+					self.view.backgroundColor = permissionColors.backgroundColor
+					self.collectionView?.isHidden = true
+				}
+			}
 		}
 	}
 
